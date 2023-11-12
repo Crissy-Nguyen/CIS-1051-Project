@@ -24,12 +24,18 @@ def draw_grid():
 left = False
 right = False
 
+def draw_bg():
+    screen.fill((0, 0, 0))
+
 # Character setup
 class char(pygame.sprite.Sprite):
-    def __init__(self, x, y, scale, speed):
+    def __init__(self, char_type, x, y, scale, speed):
         pygame.sprite.Sprite.__init__(self)
+        self.char_type = char_type
         self.speed = speed
-        img = pygame.image.load('sprites/Sprite-0001.png')
+        self.direction = 1
+        self.flip = False
+        img = pygame.image.load(f'sprites/{self.char_type}/Sprite-0001.png')
         self.image = pygame.transform.scale(img, (int(img.get_width() * scale), int(img.get_height() * scale)))
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
@@ -39,16 +45,20 @@ class char(pygame.sprite.Sprite):
         change_y = 0
         if left:
             change_x = -self.speed
+            self.flip = True
+            self.direction = -1
         if right:
             change_x = self.speed
+            self.flip = False
+            self.direction = 1
         self.rect.x += change_x
         self.rect.y += change_y
 
         
     def draw(self):
-        screen.blit(self.image, self.rect)
+        screen.blit(pygame.transform.flip(self.image, self.flip, False), self.rect)
         
-player = char(200, 200, 3, 5)
+player = char('player', 200, 200, 3, 5)
 
 
 
@@ -56,10 +66,10 @@ player = char(200, 200, 3, 5)
 run = True
 while run:
 
-    screen.fill((0, 0, 0))
-    draw_grid()
-
     clock.tick(FPS)
+
+    draw_bg()
+    draw_grid()
 
     player.draw()
     player.move(left, right)

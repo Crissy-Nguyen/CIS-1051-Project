@@ -8,13 +8,27 @@ screen_height = 600
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Hopper')
 
-# Player setup
+# Define game variables
+tile_size = 50
+
+def draw_grid():
+    for line in range(12):
+        pygame.draw.line(screen, (255, 255, 255), (0, line * tile_size), (screen_width, line * tile_size))
+    for line in range(16):
+        pygame.draw.line(screen, (255, 255, 255), (line * tile_size, 0), (line * tile_size, screen_height))
+
+# Character setup
+class char(pygame.sprite.Sprite):
+    def create(self, x, y):
+        pygame.sprite.Sprite.create(self)
+        
 player = pygame.Rect((400, 300, 50, 50))
 
 run = True
 while run:
 
     screen.fill((0, 0, 0))
+    draw_grid()
 
     pygame.draw.rect(screen, (255, 255, 0), player)
 

@@ -2,12 +2,13 @@ import pygame
 
 pygame.init()
 
+# Game window setup
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Hopper')
 
+# Player setup
 player = pygame.Rect((400, 300, 50, 50))
 
 run = True
@@ -17,6 +18,7 @@ while run:
 
     pygame.draw.rect(screen, (255, 255, 0), player)
 
+    # Player controls
     key = pygame.key.get_pressed()
     if key[pygame.K_a] == True:
         player.move_ip(-1, 0)

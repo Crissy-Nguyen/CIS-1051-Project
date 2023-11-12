@@ -19,10 +19,14 @@ def draw_grid():
 
 # Character setup
 class char(pygame.sprite.Sprite):
-    def create(self, x, y):
-        pygame.sprite.Sprite.create(self)
+    def __init__(self, x, y, scale):
+        pygame.sprite.Sprite.__init__(self)
+        img = pygame.image.load('sprites/Sprite-0001.png')
+        self.image = pygame.transform.scale(img, (int(img.get_width() * scale), int(img.get_height() * scale)))
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
         
-player = pygame.Rect((400, 300, 50, 50))
+player = char(200, 200, 3)
 
 run = True
 while run:
@@ -30,7 +34,7 @@ while run:
     screen.fill((0, 0, 0))
     draw_grid()
 
-    pygame.draw.rect(screen, (255, 255, 0), player)
+    screen.blit(player.image, player.rect)
 
     # Player controls
     key = pygame.key.get_pressed()

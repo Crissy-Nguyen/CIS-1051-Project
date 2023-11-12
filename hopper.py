@@ -8,6 +8,10 @@ screen_height = 480
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Hopper')
 
+# Set frame rate
+clock = pygame.time.Clock()
+FPS = 60
+
 # Tile measurement
 tile_size = 32
 def draw_grid():
@@ -55,7 +59,10 @@ while run:
     screen.fill((0, 0, 0))
     draw_grid()
 
+    clock.tick(FPS)
+
     player.draw()
+    player.move(left, right)
 
 
     for event in pygame.event.get():
@@ -69,6 +76,7 @@ while run:
                 left = True
             if event.key == pygame.K_d:
                 right = True
+    
         # Player keyboard release
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_a:

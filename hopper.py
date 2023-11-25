@@ -35,8 +35,11 @@ class char(pygame.sprite.Sprite):
         self.speed = speed
         self.direction = 1
         self.flip = False
-        img = pygame.image.load(f'sprites/{self.char_type}/Sprite-0001.png')
-        self.image = pygame.transform.scale(img, (int(img.get_width() * scale), int(img.get_height() * scale)))
+        self.animations = []
+        self.index = 0
+        for i in range(5):
+            img = pygame.image.load(f'sprites/{self.char_type}/{i}.png')
+            img = pygame.transform.scale(img, (int(img.get_width() * scale), int(img.get_height() * scale)))
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
 

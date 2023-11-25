@@ -12,53 +12,88 @@ pygame.display.set_caption('Hopper')
 clock = pygame.time.Clock()
 FPS = 60
 
+# game variables
+GRAVITY = 0.5
+
 # Tile measurement
-tile_size = 32
+'''tile_size = 32
 def draw_grid():
     for line in range(15):
         pygame.draw.line(screen, (255, 255, 255), (0, line * tile_size), (screen_width, line * tile_size))
     for line in range(25):
         pygame.draw.line(screen, (255, 255, 255), (line * tile_size, 0), (line * tile_size, screen_height))
-
+'''
 # Player action variables
 left = False
 right = False
 
 def draw_bg():
-    screen.fill((0, 0, 0))
+    screen.fill((143, 191, 190))
+    pygame.draw.line(screen, (255, 0, 0), (0, 400), (screen_width, 400))
+
 
 # Character setup
 class char(pygame.sprite.Sprite):
     def __init__(self, char_type, x, y, scale, speed):
         pygame.sprite.Sprite.__init__(self)
+        self.alive = True
         self.char_type = char_type
         self.speed = speed
         self.direction = 1
+        self.vel_y = 0
+        self.jump = False
+        self.midair = True
         self.flip = False
         self.animations = []
         self.index = 0
-        for i in range(1):
+        self.action = 0
+        self.update_time = pygame.time.get_ticks()
+        for i in range (2):
             img = pygame.image.load(f'sprites/{self.char_type}/{i}.png')
             img = pygame.transform.scale(img, (int(img.get_width() * scale), int(img.get_height() * scale)))
             self.animations.append(img)
         self.image = self.animations[self.index]
+        
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
 
     def move(self, left, right):
         change_x = 0
         change_y = 0
+
+        # Moving left and right
         if left:
             change_x = -self.speed
             self.flip = True
-            self.direction = -1
+            self.direction = -1 
         if right:
             change_x = self.speed
             self.flip = False
             self.direction = 1
+
+        # Jump 
+        if self.jump == True and self.midair == False:
+            self.vel_y = -10
+            self.jump = False
+            self.midair = True
+
+        # Apply gravity
+        self.vel_y += GRAVITY
+        if self.vel_y > 10:
+            self.vel_y
+        change_y += self.vel_y
+
+        # Check collision with floor
+        if self.rect.bottom + change_y > 400:
+            change_y = 400 - self.rect.bottom
+            self.midair = False
+
         self.rect.x += change_x
         self.rect.y += change_y
 
+    def update_action(self, new_action):
+        if new_action != self.action:
+            self.action = new_action
         
     def draw(self):
         screen.blit(pygame.transform.flip(self.image, self.flip, False), self.rect)
@@ -74,12 +109,14 @@ while run:
     clock.tick(FPS)
 
     draw_bg()
-    draw_grid()
+    #draw_grid()
 
     player.draw()
     player.move(left, right)
 
 
+    if left or right:
+        player.update_action(1)
     for event in pygame.event.get():
         # Quit game
         if event.type == pygame.QUIT:
@@ -98,6 +135,8 @@ while run:
                 left = False
             if event.key == pygame.K_d:
                 right = False
+            if event.key == pygame.K_w and player.alive:
+                player.jump = True
             
     pygame.display.update()
 pygame.quit()

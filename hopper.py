@@ -3,7 +3,7 @@ import pygame
 pygame.init()
 
 # Game window setup
-screen_width = 800
+screen_width = 816
 screen_height = 480
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Hopper')
@@ -16,13 +16,13 @@ FPS = 60
 GRAVITY = 0.5
 
 # Tile measurement
-'''tile_size = 32
+tile_size = 48
 def draw_grid():
     for line in range(15):
         pygame.draw.line(screen, (255, 255, 255), (0, line * tile_size), (screen_width, line * tile_size))
     for line in range(25):
         pygame.draw.line(screen, (255, 255, 255), (line * tile_size, 0), (line * tile_size, screen_height))
-'''
+
 # Player action variables
 left = False
 right = False
@@ -33,7 +33,7 @@ carrot = pygame.image.load('sprites/things/0.png').convert_alpha()
 
 def draw_bg():
     screen.fill((143, 191, 190))
-    pygame.draw.line(screen, (255, 0, 0), (0, 400), (screen_width, 400))
+    pygame.draw.line(screen, (255, 0, 0), (0, 384), (screen_width, 384))
 
 
 # Character setup
@@ -50,8 +50,6 @@ class char(pygame.sprite.Sprite):
         self.flip = False
         self.animations = []
         self.index = 0
-        self.action = 0
-        self.update_time = pygame.time.get_ticks()
         for i in range (2):
             img = pygame.image.load(f'sprites/{self.char_type}/{i}.png').convert_alpha()
             img = pygame.transform.scale(img, (int(img.get_width() * scale), int(img.get_height() * scale)))
@@ -88,19 +86,19 @@ class char(pygame.sprite.Sprite):
         change_y += self.vel_y
 
         # Check collision with floor
-        if self.rect.bottom + change_y > 400:
-            change_y = 400 - self.rect.bottom
+        if self.rect.bottom + change_y > 384:
+            change_y = 384 - self.rect.bottom
             self.midair = False
 
         self.rect.x += change_x
         self.rect.y += change_y
-
-    def update_action(self, new_action):
-        if new_action != self.action:
-            self.action = new_action
         
     def draw(self):
         screen.blit(pygame.transform.flip(self.image, self.flip, False), self.rect)
+
+class item(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        self.image
 
 class projectile(pygame.sprite.Sprite):
     def __init__(self, x, y, direction):
@@ -116,7 +114,7 @@ proj_group = pygame.sprite.Group()
 
 
 
-player = char('player', 200, 200, 3, 5)
+player = char('player', 48*1.5, 48*7.5, 3, 5)
 
 
 
@@ -127,7 +125,7 @@ while run:
     clock.tick(FPS)
 
     draw_bg()
-    #draw_grid()
+    draw_grid()
 
     player.draw()
     player.move(left, right)

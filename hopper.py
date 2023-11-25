@@ -37,9 +37,11 @@ class char(pygame.sprite.Sprite):
         self.flip = False
         self.animations = []
         self.index = 0
-        for i in range(5):
+        for i in range(1):
             img = pygame.image.load(f'sprites/{self.char_type}/{i}.png')
             img = pygame.transform.scale(img, (int(img.get_width() * scale), int(img.get_height() * scale)))
+            self.animations.append(img)
+        self.image = self.animations[self.index]
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
 

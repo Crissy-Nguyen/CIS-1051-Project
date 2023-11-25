@@ -26,6 +26,10 @@ def draw_grid():
 # Player action variables
 left = False
 right = False
+shoot = False
+
+# Load images
+carrot = pygame.image.load('sprites/things/0.png').convert_alpha()
 
 def draw_bg():
     screen.fill((143, 191, 190))
@@ -49,7 +53,7 @@ class char(pygame.sprite.Sprite):
         self.action = 0
         self.update_time = pygame.time.get_ticks()
         for i in range (2):
-            img = pygame.image.load(f'sprites/{self.char_type}/{i}.png')
+            img = pygame.image.load(f'sprites/{self.char_type}/{i}.png').convert_alpha()
             img = pygame.transform.scale(img, (int(img.get_width() * scale), int(img.get_height() * scale)))
             self.animations.append(img)
         self.image = self.animations[self.index]
@@ -97,7 +101,21 @@ class char(pygame.sprite.Sprite):
         
     def draw(self):
         screen.blit(pygame.transform.flip(self.image, self.flip, False), self.rect)
-        
+
+class projectile(pygame.sprite.Sprite):
+    def __init__(self, x, y, direction):
+        pygame.sprite.Sprite.__init__(self)
+        self.speed = 10
+        self.image = carrot
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        self.direction = direction
+
+proj_group = pygame.sprite.Group()
+
+
+
+
 player = char('player', 200, 200, 3, 5)
 
 
@@ -114,9 +132,9 @@ while run:
     player.draw()
     player.move(left, right)
 
+    proj_group.update()
+    proj_group.draw(screen)
 
-    if left or right:
-        player.update_action(1)
     for event in pygame.event.get():
         # Quit game
         if event.type == pygame.QUIT:
@@ -128,6 +146,8 @@ while run:
                 left = True
             if event.key == pygame.K_d:
                 right = True
+            if event.key == pygame.K_w and player.alive:
+                player.jump = True
     
         # Player keyboard release
         if event.type == pygame.KEYUP:
@@ -135,8 +155,6 @@ while run:
                 left = False
             if event.key == pygame.K_d:
                 right = False
-            if event.key == pygame.K_w and player.alive:
-                player.jump = True
             
     pygame.display.update()
 pygame.quit()

@@ -73,11 +73,14 @@ class Player():
             # Key presses
             key = pygame.key.get_pressed()
             # Jumping
-            if key[pygame.K_w] and self.jumped == False:
+            if key[pygame.K_UP] and self.jumped == False and self.helpless == False:
                 self.vel_y = -11
+                if key[pygame.K_RIGHT] and self.jumped == False and self.helpless == False:
+                    self.vel_y = -11
                 self.jumped = True
-            if key[pygame.K_w] == False:
+            if key[pygame.K_UP] == False:
                 self.jumped = False
+            # Moving left or right
             if key[pygame.K_a]:
                 change_x -= 5
                 self.flip = True
@@ -91,7 +94,8 @@ class Player():
                 self.vel_y = 10
             change_y += self.vel_y
 
-            # Check for collision
+            # Collision check
+            self.helpless = True
             for t in world.tiles:
                 # In x direction
                 if t[1].colliderect(self.rect.x + change_x, self.rect.y, self.width, self.height):
@@ -106,6 +110,8 @@ class Player():
                     elif self.vel_y >= 0:
                         change_y = t[1].top - self.rect.bottom
                         self.vel_y = 0
+                        self.helpless = False
+                        
 
             # Check for collision with hazards
             if pygame.sprite.spritecollide(self, spike_group, False):
@@ -146,6 +152,7 @@ class Player():
         self.jumped = False
         self.flip = False
         self.direction = 0
+        self.helpless = True
 
     # Sprite will visibly switch directions
     def flippy(self):

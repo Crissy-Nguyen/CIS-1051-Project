@@ -75,8 +75,6 @@ class Player():
             # Jumping
             if key[pygame.K_UP] and self.jumped == False and self.helpless == False:
                 self.vel_y = -11
-                if key[pygame.K_RIGHT] and self.jumped == False and self.helpless == False:
-                    self.vel_y = -11
                 self.jumped = True
             if key[pygame.K_UP] == False:
                 self.jumped = False

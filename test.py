@@ -15,9 +15,38 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('test')
 
 
-# Create a single color background
+# Single color background setup
 def draw_bg():
     screen.fill((143, 191, 190))
+
+# Button class for buttons that appear upon Game Over
+retry_img = pygame.image.load('sprites/buttons/0.png')
+class Button():
+    def __init__(self, x, y, image):
+        self.image = image
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.clicked = False
+        
+    def draw(self):
+        action = False
+        
+        # Get mouse position
+        pos = pygame.mouse.get_pos()
+
+        # Conditions for when a button is pressed
+        if self.rect.collidepoint(pos):
+            if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+                action = True
+                self.clicked = True
+        if pygame.mouse.get_pressed()[0] == 0:
+            self.clicked = False
+        
+        # Draw button
+        screen.blit(self.image, self.rect)
+
+        return action
 
 game_over = False
 
@@ -32,19 +61,7 @@ def draw_grid():
 # Player setup
 class Player():
     def __init__(self, x, y):
-        img = pygame.image.load('sprites/player/0.png')
-        self.image = pygame.transform.scale(img, (32, 32))
-        dead_img = pygame.image.load('sprites/player/1.png')
-        self.dead_image = pygame.transform.scale(dead_img, (32, 32))
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-        self.width = self.image.get_width()
-        self.height = self.image.get_height()
-        self.vel_y = 0
-        self.jumped = False
-        self.flip = False
-        self.direction = 0
+        self.reset(x, y)
 
     def update(self, game_over):
 
@@ -55,8 +72,9 @@ class Player():
         
             # Key presses
             key = pygame.key.get_pressed()
+            # Jumping
             if key[pygame.K_w] and self.jumped == False:
-                self.vel_y = -12
+                self.vel_y = -11
                 self.jumped = True
             if key[pygame.K_w] == False:
                 self.jumped = False
@@ -114,6 +132,21 @@ class Player():
 
         return game_over
 
+    def reset(self, x, y):
+        img = pygame.image.load('sprites/player/0.png')
+        self.image = pygame.transform.scale(img, (32, 32))
+        dead_img = pygame.image.load('sprites/player/1.png')
+        self.dead_image = pygame.transform.scale(dead_img, (32, 32))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+        self.vel_y = 0
+        self.jumped = False
+        self.flip = False
+        self.direction = 0
+
     # Sprite will visibly switch directions
     def flippy(self):
         screen.blit(pygame.transform.flip(self.image, self.flip, False), self.rect)
@@ -131,6 +164,7 @@ class World():
         for row in data:
             col_count = 0
             for tile in row:
+                # 1: Block
                 if tile == 1:
                     img = pygame.transform.scale(block, (tile_size, tile_size))
                     img_rect = img.get_rect()
@@ -138,6 +172,7 @@ class World():
                     img_rect.y = row_count * tile_size
                     tile = (img, img_rect)
                     self.tiles.append(tile)
+                # -1: Carrot
                 if tile == -1:
                     img = pygame.transform.scale(carrot, (tile_size, tile_size))
                     img_rect = img.get_rect()
@@ -146,6 +181,7 @@ class World():
                     tile = (img, img_rect)
                     self.tiles.append(tile)
                 col_count += 1
+                # 2: Spike
                 if tile == 2:
                     spike = Spike(col_count * tile_size - 39.5, row_count * tile_size + 16)
                     spike_group.add(spike)
@@ -155,7 +191,8 @@ class World():
         for t in self.tiles:
             screen.blit(t[0], t[1])
             pygame.draw.rect(screen, (255, 0, 255), t[1], 2)
-            
+
+# Hazard setup            
 class Spike(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
@@ -165,11 +202,12 @@ class Spike(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
+
 world_data = [
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0], 
+[0, 0, 0, 0, 0, 0, random.randint(-1, 2), 2, 0, 0, 0, 0], 
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
 [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0], 
 [0, 0, 0, 0, 0, 0, 2, 1, 1, 0, 0, 0], 
@@ -184,16 +222,28 @@ spike_group = pygame.sprite.Group()
 
 world = World(world_data)
 
+retry = Button(48*2, 48*6, retry_img)
+
 run = True
 while run:
 
     clock.tick(FPS)
 
     draw_bg()
+    
     world.draw()
+    
     spike_group.draw(screen)
+    
     game_over = player.update(game_over)
+
+    if game_over:
+        if retry.draw():
+            player.reset(48*2, 48*8)
+            game_over = False
+    
     player.flippy()
+    
     #draw_grid()
 
     for event in pygame.event.get():

@@ -61,6 +61,7 @@ def draw_grid():
 # Player setup
 class Player():
     def __init__(self, x, y):
+        # Scroll down to the reset function
         self.reset(x, y)
 
     def update(self, game_over):
@@ -68,6 +69,7 @@ class Player():
         change_x = 0
         change_y = 0
 
+        # Player stops moving when dead
         if game_over == False:
         
             # Key presses
@@ -136,6 +138,7 @@ class Player():
 
         return game_over
 
+    # Player stuff; reset player every time user clicks the Retry button
     def reset(self, x, y):
         img = pygame.image.load('sprites/player/0.png')
         self.image = pygame.transform.scale(img, (32, 32))
@@ -159,6 +162,14 @@ class Player():
 # World setup
 class World():
     def __init__(self, data):
+        self.reset(data)
+
+    def draw(self):
+        for t in self.tiles:
+            screen.blit(t[0], t[1])
+            pygame.draw.rect(screen, (255, 0, 255), t[1], 2)
+
+    def reset(self, data):
         self.tiles = []
 
         # Some images
@@ -185,17 +196,12 @@ class World():
                     img_rect.y = row_count * tile_size
                     tile = (img, img_rect)
                     self.tiles.append(tile)
-                col_count += 1
                 # 2: Spike
                 if tile == 2:
-                    spike = Spike(col_count * tile_size - 39.5, row_count * tile_size + 16)
+                    spike = Spike(col_count*tile_size + 8, row_count*tile_size + 8)
                     spike_group.add(spike)
+                col_count += 1
             row_count += 1
-
-    def draw(self):
-        for t in self.tiles:
-            screen.blit(t[0], t[1])
-            pygame.draw.rect(screen, (255, 0, 255), t[1], 2)
 
 # Hazard setup            
 class Spike(pygame.sprite.Sprite):
@@ -208,24 +214,22 @@ class Spike(pygame.sprite.Sprite):
         self.rect.y = y
 
 
-world_data = [
+player = Player(48*2, 48*8)
+
+spike_group = pygame.sprite.Group()
+
+world = World([
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 [0, 0, 0, 0, 0, 0, random.randint(-1, 2), 2, 0, 0, 0, 0], 
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
 [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0], 
-[0, 0, 0, 0, 0, 0, 2, 1, 1, 0, 0, 0], 
+[0, 0, 0, 0, random.choice([-1,2]), 0, 0, 1, 1, 0, 0, 0], 
 [0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0], 
 [0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0], 
-[1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1]
-]
-
-player = Player(48*2, 48*8)
-
-spike_group = pygame.sprite.Group()
-
-world = World(world_data)
+[1, 1, 1, 1, random.randint(-1,2), 0, 1, 1, 1, 1, 1, 1]
+])
 
 retry = Button(48*2, 48*6, retry_img)
 
@@ -245,6 +249,19 @@ while run:
     if game_over:
         if retry.draw():
             player.reset(48*2, 48*8)
+            spike_group = pygame.sprite.Group()
+            world.reset([
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, random.randint(-1, 2), 2, 0, 0, 0, 0], 
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+            [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0], 
+            [0, 0, 0, 0, random.choice([-1,2]), 0, 0, 1, 1, 0, 0, 0], 
+            [0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0], 
+            [0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0], 
+            [1, 1, 1, 1, random.randint(-1,2), 0, 1, 1, 1, 1, 1, 1]
+            ])
             game_over = False
     
     player.flippy()

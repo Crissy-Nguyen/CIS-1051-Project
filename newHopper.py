@@ -107,7 +107,7 @@ class Player():
             change_y += self.vel_y
 
             # Collision check
-            self.helpless = True
+            #self.helpless = True
             for t in world.tiles:
                 # In x direction
                 if t[1].colliderect(self.rect.x + change_x, self.rect.y, self.width, self.height):
@@ -146,7 +146,7 @@ class Player():
         
         # Draw player onto screen
         screen.blit(self.image, self.rect)
-        pygame.draw.rect(screen, (255, 255, 0), self.rect, 2)
+        #pygame.draw.rect(screen, (255, 255, 0), self.rect, 2)
 
         return game_over
 
@@ -179,7 +179,7 @@ class World():
     def draw(self):
         for t in self.tiles:
             screen.blit(t[0], t[1])
-            pygame.draw.rect(screen, (255, 0, 255), t[1], 2)
+            #pygame.draw.rect(screen, (255, 0, 255), t[1], 2)
 
     def reset(self, data):
         self.tiles = []
@@ -237,16 +237,17 @@ carrot_group = pygame.sprite.Group()
 
 world = World([
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, random.randint(-1, 2), 2, 0, 0, 0, 0], 
+[0, random.randint(-1,0), 0, 0, 0, 0, 0, 0, 0, 0, random.randint(-1,0), 0],
+[0, random.choice([0,2]), 0, 0, 0, 0, 0, 0, 0, 0, random.choice([0,2]), 0],
+[0, 1, 1, 0, random.randint(1,2), random.randint(1,2), random.randint(1,2), random.randint(1,2), 0, 1, 1, 0], 
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
-[0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0], 
-[0, 0, 0, 0, random.choice([-1,2]), 0, 0, 1, 1, 0, 0, 0], 
-[0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0], 
-[0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0], 
-[1, 1, 1, 1, random.randint(-1,2), 0, 1, 1, 1, 1, 1, 1]
+[0, random.randint(1,2), 0, 0, 0, 1, 1, 0, 0, 0, random.randint(1,2), 0], 
+[0, random.choice([0,2]), 0, 0, 0, random.choice([0,2]), random.choice([0,2]), 0, 0, 0, random.choice([0,2]), 0], 
+[random.randint(0,2), 1, 0, 0, random.randint(1,2), 1, 1, random.randint(1,2), 0, 0, 1, random.randint(0,2)], 
+[0, random.randint(-1,0), 0, 0, 0, random.choice([0,2]), random.choice([0,2]), 0, 0, 0, random.randint(-1,0), 0], 
+[1, 1, 1, 1, random.randint(0,2), random.randint(0,2), random.randint(0,2), random.randint(0,2), 1, 1, 1, 1]
 ])
+            
 
 retry = Button(48*2, 48*6, retry_img)
 
@@ -267,17 +268,17 @@ while run:
             carrot_group = pygame.sprite.Group()
             world.reset([
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, random.randint(-1, 2), 2, 0, 0, 0, 0], 
+            [0, random.randint(-1,0), 0, 0, 0, 0, 0, 0, 0, 0, random.randint(-1,0), 0],
+            [0, random.choice([0,2]), 0, 0, 0, 0, 0, 0, 0, 0, random.choice([0,2]), 0],
+            [0, 1, 1, 0, random.randint(1,2), random.randint(1,2), random.randint(1,2), random.randint(1,2), 0, 1, 1, 0], 
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
-            [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0], 
-            [0, 0, 0, 0, random.choice([-1,0]), 0, 0, 1, 1, 0, 0, 0], 
-            [0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0], 
-            [0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0], 
-            [1, 1, 1, 1, random.randint(-1,2), 0, 1, 1, 1, 1, 1, 1]
+            [0, random.randint(1,2), 0, 0, 0, 1, 1, 0, 0, 0, random.randint(1,2), 0], 
+            [0, random.choice([0,2]), 0, 0, 0, random.choice([0,2]), random.choice([0,2]), 0, 0, 0, random.choice([0,2]), 0], 
+            [random.randint(0,2), 1, 0, 0, random.randint(1,2), 1, 1, random.randint(1,2), 0, 0, 1, random.randint(0,2)], 
+            [0, random.randint(-1,0), 0, 0, 0, random.choice([0,2]), random.choice([0,2]), 0, 0, 0, random.randint(-1,0), 0], 
+            [1, 1, 1, 1, random.randint(0,2), random.randint(0,2), random.randint(0,2), random.randint(0,2), 1, 1, 1, 1]
             ])
-        draw_text("Score: " + str(score), font0, white, 48*1, 48*1)
+        draw_text("Score: " + str(score), font0, white, 48*1, 0)
     
     spike_group.draw(screen)
     carrot_group.draw(screen)
@@ -292,15 +293,15 @@ while run:
             carrot_group = pygame.sprite.Group()
             world.reset([
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, random.randint(-1, 2), 2, 0, 0, 0, 0], 
+            [0, random.randint(-1,0), 0, 0, 0, 0, 0, 0, 0, 0, random.randint(-1,0), 0],
+            [0, random.choice([0,2]), 0, 0, 0, 0, 0, 0, 0, 0, random.choice([0,2]), 0],
+            [0, 1, 1, 0, random.randint(1,2), random.randint(1,2), random.randint(1,2), random.randint(1,2), 0, 1, 1, 0], 
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
-            [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0], 
-            [0, 0, 0, 0, random.choice([-1,0]), 0, 0, 1, 1, 0, 0, 0], 
-            [0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0], 
-            [0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0], 
-            [1, 1, 1, 1, random.randint(-1,2), 0, 1, 1, 1, 1, 1, 1]
+            [0, random.randint(1,2), 0, 0, 0, 1, 1, 0, 0, 0, random.randint(1,2), 0], 
+            [0, random.choice([0,2]), 0, 0, 0, random.choice([0,2]), random.choice([0,2]), 0, 0, 0, random.choice([0,2]), 0], 
+            [random.randint(0,2), 1, 0, 0, random.randint(1,2), 1, 1, random.randint(1,2), 0, 0, 1, random.randint(0,2)], 
+            [0, random.randint(-1,0), 0, 0, 0, random.choice([0,2]), random.choice([0,2]), 0, 0, 0, random.randint(-1,0), 0], 
+            [1, 1, 1, 1, random.randint(0,2), random.randint(0,2), random.randint(0,2), random.randint(0,2), 1, 1, 1, 1]
             ])
             score = 0
             game_over = False

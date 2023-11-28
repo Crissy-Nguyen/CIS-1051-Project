@@ -16,7 +16,10 @@ pygame.display.set_caption('Hopper')
 
 # Font setup
 font0 = pygame.font.SysFont('Courier', 30)
+font1 = pygame.font.SysFont('Courier', 60)
 white = (255, 255, 255)
+red = (255, 0, 0)
+
 
 # Single color background setup
 def draw_bg():
@@ -260,6 +263,20 @@ while run:
         if pygame.sprite.spritecollide(player, carrot_group, True):
             score += 1
             print(score)
+            spike_group = pygame.sprite.Group()
+            carrot_group = pygame.sprite.Group()
+            world.reset([
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, random.randint(-1, 2), 2, 0, 0, 0, 0], 
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+            [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0], 
+            [0, 0, 0, 0, random.choice([-1,0]), 0, 0, 1, 1, 0, 0, 0], 
+            [0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0], 
+            [0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0], 
+            [1, 1, 1, 1, random.randint(-1,2), 0, 1, 1, 1, 1, 1, 1]
+            ])
         draw_text("Score: " + str(score), font0, white, 48*1, 48*1)
     
     spike_group.draw(screen)
@@ -268,6 +285,7 @@ while run:
     game_over = player.update(game_over)
 
     if game_over:
+        draw_text("GAME OVER", font1, red, 48*2.5, 48*2)
         if retry.draw():
             player.reset(48*2, 48*8)
             spike_group = pygame.sprite.Group()
@@ -279,7 +297,7 @@ while run:
             [0, 0, 0, 0, 0, 0, random.randint(-1, 2), 2, 0, 0, 0, 0], 
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
             [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0], 
-            [0, 0, 0, 0, random.choice([-1,2]), 0, 0, 1, 1, 0, 0, 0], 
+            [0, 0, 0, 0, random.choice([-1,0]), 0, 0, 1, 1, 0, 0, 0], 
             [0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0], 
             [0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0], 
             [1, 1, 1, 1, random.randint(-1,2), 0, 1, 1, 1, 1, 1, 1]

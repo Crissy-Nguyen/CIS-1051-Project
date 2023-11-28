@@ -12,12 +12,20 @@ FPS = 60
 screen_width = 576
 screen_height = 480
 screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption('test')
+pygame.display.set_caption('Hopper')
 
+# Font setup
+font0 = pygame.font.SysFont('Courier', 30)
+white = (255, 255, 255)
 
 # Single color background setup
 def draw_bg():
     screen.fill((143, 191, 190))
+
+#Score counter setup
+def draw_text(text, font, text_color, x, y):
+    img = font.render(text, True, text_color)
+    screen.blit(img, (x, y))
 
 # Button class for buttons that appear upon Game Over
 retry_img = pygame.image.load('sprites/buttons/0.png')
@@ -49,6 +57,7 @@ class Button():
         return action
 
 game_over = False
+score = 0
 
 # Grid setup for measurement purposes
 tile_size = 48
@@ -174,7 +183,6 @@ class World():
 
         # Some images
         block = pygame.image.load('sprites/things/1.png')
-        carrot = pygame.image.load('sprites/things/0.png')
         
         row_count = 0
         for row in data:
@@ -190,12 +198,8 @@ class World():
                     self.tiles.append(tile)
                 # -1: Carrot
                 if tile == -1:
-                    img = pygame.transform.scale(carrot, (tile_size, tile_size))
-                    img_rect = img.get_rect()
-                    img_rect.x = col_count * tile_size
-                    img_rect.y = row_count * tile_size
-                    tile = (img, img_rect)
-                    self.tiles.append(tile)
+                    carrot = Carrot(col_count*tile_size, row_count*tile_size)
+                    carrot_group.add(carrot)
                 # 2: Spike
                 if tile == 2:
                     spike = Spike(col_count*tile_size + 8, row_count*tile_size + 8)
@@ -213,10 +217,20 @@ class Spike(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
+class Carrot(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.img = pygame.image.load('sprites/things/0.png')
+        self.image = pygame.transform.scale(self.img, (tile_size, tile_size))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
 
 player = Player(48*2, 48*8)
 
 spike_group = pygame.sprite.Group()
+carrot_group = pygame.sprite.Group()
 
 world = World([
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -241,8 +255,15 @@ while run:
     draw_bg()
     
     world.draw()
+
+    if game_over == False:
+        if pygame.sprite.spritecollide(player, carrot_group, True):
+            score += 1
+            print(score)
+        draw_text("Score: " + str(score), font0, white, 48*1, 48*1)
     
     spike_group.draw(screen)
+    carrot_group.draw(screen)
     
     game_over = player.update(game_over)
 
@@ -250,6 +271,7 @@ while run:
         if retry.draw():
             player.reset(48*2, 48*8)
             spike_group = pygame.sprite.Group()
+            carrot_group = pygame.sprite.Group()
             world.reset([
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -262,6 +284,7 @@ while run:
             [0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0], 
             [1, 1, 1, 1, random.randint(-1,2), 0, 1, 1, 1, 1, 1, 1]
             ])
+            score = 0
             game_over = False
     
     player.flippy()

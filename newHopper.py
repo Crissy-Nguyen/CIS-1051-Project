@@ -183,6 +183,7 @@ class World():
 
     def reset(self, data):
         self.tiles = []
+        hasCarrot = False
 
         # Some images
         block = pygame.image.load('sprites/things/1.png')
@@ -201,6 +202,7 @@ class World():
                     self.tiles.append(tile)
                 # -1: Carrot
                 if tile == -1:
+                    hasCarrot = True
                     carrot = Carrot(col_count*tile_size, row_count*tile_size)
                     carrot_group.add(carrot)
                 # 2: Spike

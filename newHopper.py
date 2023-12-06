@@ -249,7 +249,6 @@ world = World([
 [0, random.randint(-1,0), 0, 0, 0, random.choice([0,2]), random.choice([0,2]), 0, 0, 0, random.randint(-1,0), 0], 
 [1, 1, 1, 1, random.randint(0,2), random.randint(0,2), random.randint(0,2), random.randint(0,2), 1, 1, 1, 1]
 ])
-            
 
 retry = Button(48*2, 48*6, retry_img)
 

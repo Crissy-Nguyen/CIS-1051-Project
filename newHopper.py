@@ -32,6 +32,7 @@ def draw_text(text, font, text_color, x, y):
 
 # Button class for buttons that appear upon Game Over
 retry_img = pygame.image.load('sprites/buttons/0.png')
+quit_img = pygame.image.load('sprites/buttons/1.png')
 class Button():
     def __init__(self, x, y, image):
         self.image = image
@@ -251,6 +252,7 @@ world = World([
 ])
 
 retry = Button(48*2, 48*6, retry_img)
+QUIT = Button(48*7, 48*6, quit_img)
 
 run = True
 while run:
@@ -306,6 +308,8 @@ while run:
             ])
             score = 0
             game_over = False
+        if QUIT.draw():
+            run = False
     
     player.flippy()
     

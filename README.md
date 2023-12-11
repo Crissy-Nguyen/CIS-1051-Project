@@ -1,7 +1,7 @@
 # CIS-1051-Project
 
 ### What to Know about the Project:
-- Snake-inspired 2D platformer
+- It is a Snake-inspired 2D platformer the level's layout randomizes every time player collects food.
 - The main core of the game is complete, with some aspects still unpolished.
 - The most challenging part was implementing level randomization (which still needs tweaking).
 - Sprites in the game were made by me using Aseprite.
